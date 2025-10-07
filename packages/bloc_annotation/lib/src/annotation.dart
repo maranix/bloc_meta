@@ -1,0 +1,22 @@
+abstract class BaseAnnotation {
+  const BaseAnnotation({
+    this.name,
+    this.copyWith = true,
+    this.overrideEquality = true,
+  });
+
+  /// Name of the generated entity will be overriden by the provided value.
+  ///
+  /// Defaults to the name of the annotated entity with `_$` as prefix.
+  final String? name;
+
+  /// Property indicating whether to enable copyWith method generation.
+  ///
+  /// Defaults to [true].
+  final bool copyWith;
+
+  /// Property indicating whether to override `==` and `hashCode`.
+  ///
+  /// Defaults to [true].
+  final bool overrideEquality;
+}
