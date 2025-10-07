@@ -1,0 +1,16 @@
+builders:
+  cubit_builder:
+    import: "package:bloc_annotation_generator/builder.dart"
+    builder_factories: ["cubitClassBuilder"]
+    build_extensions: { ".dart": ["cubitClass.g.part"] }
+    auto_apply: dependents
+    applies_builders: ["source_gen|combining_builder"]
+    build_to: cache
+    defaults:
+      options:
+        run_only_if_triggered: true
+
+triggers:
+  bloc_annotation_generator:cubit_builder:
+    - import bloc_annotaion/bloc_annotation.dart
+    - annotation CubitClass
