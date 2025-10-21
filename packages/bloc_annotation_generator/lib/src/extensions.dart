@@ -28,6 +28,7 @@ extension ConstantReaderAnnotationPropertiesX on ConstantReader {
     name: read("name").stringValue,
     copyWith: read("copyWith").boolValue,
     overrideEquality: read("overrideEquality").boolValue,
+    overrideToString: read("overrideToString").boolValue,
   );
 
   /// Extracts the [CubitClass] annotation properties from the given ConstantReader
@@ -41,6 +42,7 @@ extension ConstantReaderAnnotationPropertiesX on ConstantReader {
       name: baseProps.name,
       copyWith: baseProps.copyWith,
       overrideEquality: baseProps.overrideEquality,
+      overrideToString: baseProps.overrideToString,
       state: state,
     );
   }

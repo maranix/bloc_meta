@@ -7,6 +7,7 @@ class CubitClass extends BaseAnnotation {
     super.name,
     super.copyWith,
     super.overrideEquality,
+    super.overrideToString,
     required this.state,
   });
 

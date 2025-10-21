@@ -3,6 +3,7 @@ abstract class BaseAnnotation {
     this.name = "",
     this.copyWith = true,
     this.overrideEquality = true,
+    this.overrideToString = true,
   });
 
   /// Name of the generated entity will be overriden by the provided value.
@@ -10,13 +11,18 @@ abstract class BaseAnnotation {
   /// Defaults to the name of the annotated entity with `_$` as prefix.
   final String name;
 
-  /// Property indicating whether to enable copyWith method generation.
+  /// Attribute indicating whether to enable copyWith method generation.
   ///
   /// Defaults to [true].
   final bool copyWith;
 
-  /// Property indicating whether to override `==` and `hashCode`.
+  /// Attribute indicating whether to override `==` and `hashCode`.
   ///
   /// Defaults to [true].
   final bool overrideEquality;
+
+  /// Attribute indicating whether to override `==` and `hashCode`.
+  ///
+  /// Defaults to [true].
+  final bool overrideToString;
 }

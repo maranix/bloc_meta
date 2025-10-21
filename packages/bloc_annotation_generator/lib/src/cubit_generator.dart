@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:bloc_annotation/bloc_annotation.dart';
+import 'package:bloc_annotation_generator/src/element_code_generator.dart';
 import 'package:bloc_annotation_generator/src/extensions.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
@@ -13,18 +14,13 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    // TODO: improve exceptions and provide more informative messages.
-    if (!element.isClass) {
-      throw InvalidGenerationSource(
-        "Expected annotated target to be a Class but found ${element.kind.displayName}",
-      );
-    }
+    final elementGenerator = ClassCodeGenerator(element);
 
     final annotationProps = annotation.getCubitClassAnnotationProperties();
 
     final name = switch (annotationProps.name.isEmpty) {
       false => annotationProps.name,
-      true => element.displayName,
+      true => elementGenerator.name,
     };
 
     final generatedClass = Class(
@@ -43,7 +39,65 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
                 ),
               ),
           ),
-        ),
+        )
+        ..methods.addAll([
+          // copyWith
+          if (annotationProps.copyWith)
+            Method(
+              (m) => m
+                ..returns = refer(name)
+                ..name = 'copyWith'
+                ..lambda = true
+                ..optionalParameters.addAll(
+                  elementGenerator.collectAttributes().map(
+                    (a) => Parameter(
+                      (p) => p
+                        ..name = a.name
+                        ..type = refer(a.type),
+                    ),
+                  ),
+                )
+                ..body = Code(elementGenerator.copyWith()),
+            ),
+          // toString
+          if (annotationProps.overrideToString)
+            Method(
+              (m) => m
+                ..annotations.add(refer('override'))
+                ..returns = refer('String')
+                ..name = 'toString'
+                ..lambda = true
+                ..body = Code(elementGenerator.overrideToString()),
+            ),
+          // equality
+          if (annotationProps.overrideEquality) ...[
+            Method(
+              (m) => m
+                ..annotations.add(refer('override'))
+                ..returns = refer('int')
+                ..type = MethodType.getter
+                ..name = 'hashCode'
+                ..lambda = true
+                ..body = Code(elementGenerator.overrideHashCode()),
+            ),
+            Method(
+              (m) => m
+                ..annotations.add(refer('override'))
+                ..returns = refer('bool')
+                ..name = 'operator =='
+                ..requiredParameters.add(
+                  Parameter(
+                    (p) => p
+                      ..name = 'other'
+                      ..covariant = true
+                      ..type = refer(name),
+                  ),
+                )
+                ..lambda = true
+                ..body = Code(elementGenerator.overrideEqualityOperator()),
+            ),
+          ],
+        ]),
     );
 
     final emitter = DartEmitter();
