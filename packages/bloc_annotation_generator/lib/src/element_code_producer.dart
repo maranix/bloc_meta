@@ -12,13 +12,13 @@ abstract class ElementCodeProducer {
 
   List<ElementAttribute> collectAttributes();
 
-  String copyWith();
+  String copyWith([List<ElementAttribute>? attributes]);
 
-  String overrideToString();
+  String overrideToString([List<ElementAttribute>? attributes]);
 
-  String overrideHashCode();
+  String overrideHashCode([List<ElementAttribute>? attributes]);
 
-  String overrideEqualityOperator();
+  String overrideEqualityOperator([List<ElementAttribute>? attributes]);
 }
 
 final class ClassCodeProducer extends ElementCodeProducer {
@@ -43,19 +43,19 @@ final class ClassCodeProducer extends ElementCodeProducer {
       .toList();
 
   @override
-  String copyWith() {
-    final attributes = collectAttributes();
-    if (attributes.isEmpty) {
+  String copyWith([List<ElementAttribute>? attributes]) {
+    final attrs = attributes ?? collectAttributes();
+    if (attrs.isEmpty) {
       return '$name()';
     }
 
     final builder = StringBuffer('return $name(');
-    for (final a in attributes.take(attributes.length - 1)) {
+    for (final a in attrs.take(attrs.length - 1)) {
       final name = a.name;
       builder.write('$name: $name ?? this.$name)');
     }
 
-    final remainingAttribute = attributes.last.name;
+    final remainingAttribute = attrs.last.name;
     builder.write(
       '$remainingAttribute: $remainingAttribute ?? this.$remainingAttribute)',
     );
@@ -64,13 +64,13 @@ final class ClassCodeProducer extends ElementCodeProducer {
   }
 
   @override
-  String overrideToString() {
-    final attributes = collectAttributes();
+  String overrideToString([List<ElementAttribute>? attributes]) {
+    final attrs = attributes ?? collectAttributes();
 
     // TODO: We should add state here as well incase it is a Cubit or Bloc
     //
     // Otherwise we are already printing out the attributes of the Event or State like classes
-    if (attributes.isEmpty) {
+    if (attrs.isEmpty) {
       if (stringifyState) return '\'$name(state: \$state)\'';
 
       return '\'$name()\'';
@@ -78,12 +78,12 @@ final class ClassCodeProducer extends ElementCodeProducer {
 
     final builder = StringBuffer('\'$name(\'');
 
-    for (final a in attributes.take(attributes.length - 1)) {
+    for (final a in attrs.take(attrs.length - 1)) {
       final name = a.name;
       builder.write('$name: $name,');
     }
 
-    final remainingAttribute = attributes.last.name;
+    final remainingAttribute = attrs.last.name;
 
     if (stringifyState) {
       builder.write('$remainingAttribute: $remainingAttribute,');
@@ -96,12 +96,12 @@ final class ClassCodeProducer extends ElementCodeProducer {
   }
 
   @override
-  String overrideHashCode() =>
-      'Object.hashAll([${collectAttributes().map((a) => a.name).join(', ')}])';
+  String overrideHashCode([List<ElementAttribute>? attributes]) =>
+      'Object.hashAll([${(attributes ?? collectAttributes()).map((a) => a.name).join(', ')}])';
 
   @override
-  String overrideEqualityOperator() {
-    final attributes = collectAttributes();
+  String overrideEqualityOperator([List<ElementAttribute>? attributes]) {
+    final attrs = attributes ?? collectAttributes();
 
     final builder = StringBuffer(
       'if (identical(this, other)) return true;'
@@ -110,19 +110,19 @@ final class ClassCodeProducer extends ElementCodeProducer {
       '\n',
     );
 
-    if (attributes.isEmpty) {
+    if (attrs.isEmpty) {
       builder.write('return true;');
       return builder.toString();
     }
 
     builder.write('return other is $name &&');
 
-    for (final a in attributes.take(attributes.length - 1)) {
+    for (final a in attrs.take(attrs.length - 1)) {
       final name = a.name;
       builder.write('$name == this.$name &&');
     }
 
-    final remainingAttribute = attributes.last.name;
+    final remainingAttribute = attrs.last.name;
     builder.write('$remainingAttribute == this.$remainingAttribute');
 
     return builder.toString();
