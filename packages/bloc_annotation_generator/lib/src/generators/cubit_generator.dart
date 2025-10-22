@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:bloc_annotation/bloc_annotation.dart';
-import 'package:bloc_annotation_generator/src/element_code_generator.dart';
+import 'package:bloc_annotation_generator/src/element_code_producer.dart';
 import 'package:bloc_annotation_generator/src/extensions.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
@@ -14,7 +14,7 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    final elementGenerator = ClassCodeGenerator(element);
+    final elementGenerator = ClassCodeProducer(element);
 
     final annotationProps = annotation.getCubitClassAnnotationProperties();
 

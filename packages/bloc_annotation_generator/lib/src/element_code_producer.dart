@@ -3,8 +3,8 @@ import 'package:bloc_annotation_generator/src/exceptions.dart';
 import 'package:bloc_annotation_generator/src/extensions.dart';
 import 'package:bloc_annotation_generator/src/types.dart';
 
-abstract class ElementCodeGenerator {
-  const ElementCodeGenerator(this.element);
+abstract class ElementCodeProducer {
+  const ElementCodeProducer(this.element);
 
   final Element element;
 
@@ -21,8 +21,8 @@ abstract class ElementCodeGenerator {
   String overrideEqualityOperator();
 }
 
-final class ClassCodeGenerator extends ElementCodeGenerator {
-  ClassCodeGenerator(super.element) {
+final class ClassCodeProducer extends ElementCodeProducer {
+  ClassCodeProducer(super.element) {
     if (!element.kindOf(ElementKind.CLASS)) {
       throw InvalidSourceElementException(
         got: element,
