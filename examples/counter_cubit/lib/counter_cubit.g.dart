@@ -9,14 +9,18 @@ part of 'counter_cubit.dart';
 abstract class _$CounterCubit extends Cubit<int> {
   _$CounterCubit(super.initialState);
 
-  @override
-  String toString() => 'CounterCubit()';
-
   CounterCubit copyWith() => CounterCubit();
+
+  @override
+  String toString() => 'CounterCubit(state: $state)';
 
   @override
   int get hashCode => Object.hashAll([]);
 
   @override
-  bool operator ==(covariant CounterCubit other) => true;
+  bool operator ==(covariant CounterCubit other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return true;
+  }
 }

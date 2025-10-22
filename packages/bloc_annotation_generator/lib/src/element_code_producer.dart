@@ -22,7 +22,7 @@ abstract class ElementCodeProducer {
 }
 
 final class ClassCodeProducer extends ElementCodeProducer {
-  ClassCodeProducer(super.element) {
+  ClassCodeProducer(super.element, {this.stringifyState = false}) {
     if (!element.kindOf(ElementKind.CLASS)) {
       throw InvalidSourceElementException(
         got: element,
@@ -30,6 +30,8 @@ final class ClassCodeProducer extends ElementCodeProducer {
       );
     }
   }
+
+  final bool stringifyState;
 
   @override
   String get name => element.displayName;
@@ -69,6 +71,8 @@ final class ClassCodeProducer extends ElementCodeProducer {
     //
     // Otherwise we are already printing out the attributes of the Event or State like classes
     if (attributes.isEmpty) {
+      if (stringifyState) return '\'$name(state: \$state)\'';
+
       return '\'$name()\'';
     }
 
@@ -80,8 +84,14 @@ final class ClassCodeProducer extends ElementCodeProducer {
     }
 
     final remainingAttribute = attributes.last.name;
-    builder.write('$remainingAttribute: $remainingAttribute)\'');
 
+    if (stringifyState) {
+      builder.write('$remainingAttribute: $remainingAttribute,');
+      builder.write('state: \$state)\'');
+      return builder.toString();
+    }
+
+    builder.write('$remainingAttribute: $remainingAttribute)\'');
     return builder.toString();
   }
 
@@ -93,14 +103,19 @@ final class ClassCodeProducer extends ElementCodeProducer {
   String overrideEqualityOperator() {
     final attributes = collectAttributes();
 
-    if (attributes.isEmpty) return 'true';
-
     final builder = StringBuffer(
       'if (identical(this, other)) return true;'
       '\n'
       'if (other.runtimeType != runtimeType) return false;'
-      'return other is $name &&',
+      '\n',
     );
+
+    if (attributes.isEmpty) {
+      builder.write('return true;');
+      return builder.toString();
+    }
+
+    builder.write('return other is $name &&');
 
     for (final a in attributes.take(attributes.length - 1)) {
       final name = a.name;

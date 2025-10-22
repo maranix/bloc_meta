@@ -14,7 +14,7 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    final elementGenerator = ClassCodeProducer(element);
+    final elementGenerator = ClassCodeProducer(element, stringifyState: true);
 
     final annotationProps = annotation.getCubitClassAnnotationProperties();
 
@@ -69,7 +69,7 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
                 ..lambda = true
                 ..body = Code(elementGenerator.overrideToString()),
             ),
-          // equality
+          // override hashcode
           if (annotationProps.overrideEquality) ...[
             Method(
               (m) => m
@@ -80,6 +80,7 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
                 ..lambda = true
                 ..body = Code(elementGenerator.overrideHashCode()),
             ),
+            // override equality
             Method(
               (m) => m
                 ..annotations.add(refer('override'))
@@ -93,7 +94,6 @@ final class CubitClassGenerator extends GeneratorForAnnotation<CubitClass> {
                       ..type = refer(name),
                   ),
                 )
-                ..lambda = true
                 ..body = Code(elementGenerator.overrideEqualityOperator()),
             ),
           ],
