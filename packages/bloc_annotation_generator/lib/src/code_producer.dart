@@ -150,28 +150,21 @@ final class BasicClassCodeProducer extends ClassCodeProducer {
 
   @override
   String overrideEqualityOperator() {
-    final builder = StringBuffer(
-      'if (identical(this, other)) return true;'
-      '\n'
-      'if (other.runtimeType != runtimeType) return false;'
-      '\n',
-    );
-
     if (_attributes.isEmpty) {
-      builder.write('return true;');
-      return builder.toString();
+      return '''
+if (identical(this, other)) return true;
+if (other.runtimeType != runtimeType) return false;
+return true;
+''';
     }
 
-    builder.write('return other is $name &&');
-
-    for (final a in _attributes.take(_attributes.length - 1)) {
-      final name = a.name;
-      builder.write('$name == this.$name &&');
-    }
-
-    final remainingAttribute = _attributes.last.name;
-    builder.write('$remainingAttribute == this.$remainingAttribute;');
-
-    return builder.toString();
+    final conditions = _attributes
+        .map((a) => '${a.name} == other.${a.name}')
+        .join(' && ');
+    return '''
+if (identical(this, other)) return true;
+if (other.runtimeType != runtimeType) return false;
+return other is $name && $conditions;
+''';
   }
 }
