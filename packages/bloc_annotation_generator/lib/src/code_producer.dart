@@ -5,7 +5,7 @@ import 'package:bloc_annotation_generator/src/exceptions.dart';
 import 'package:bloc_annotation_generator/src/extensions.dart';
 import 'package:bloc_annotation_generator/src/types.dart';
 
-/// {@template element_code_producer}
+/// {@template class_code_producer}
 /// An abstract base class that defines a contract for generating code
 /// representations of source elements (such as classes, methods, or fields).
 ///
@@ -14,9 +14,9 @@ import 'package:bloc_annotation_generator/src/types.dart';
 /// - Generating snippets for `copyWith`, `toString`, `hashCode`, and equality operators.
 ///
 /// {@endtemplate}
-abstract class ElementCodeProducer {
-  /// {@macro element_code_producer}
-  const ElementCodeProducer(this.element);
+abstract class ClassCodeProducer {
+  /// {@macro class_code_producer}
+  const ClassCodeProducer(this.element);
 
   /// The source element (e.g., a Dart class, field, or method) this producer operates on.
   final Element element;
@@ -60,8 +60,8 @@ abstract class ElementCodeProducer {
   String overrideEqualityOperator();
 }
 
-/// {@template class_code_producer}
-/// A concrete implementation of [ElementCodeProducer] for Dart class elements.
+/// {@template basic_class_code_producer}
+/// A concrete implementation of [ClassCodeProducer] for Dart class elements.
 ///
 /// This class inspects a [ClassElement] and generates:
 /// - A `copyWith` method for immutable class updates.
@@ -69,9 +69,9 @@ abstract class ElementCodeProducer {
 /// - Proper `hashCode` and `==` overrides for structural equality.
 ///
 /// {@endtemplate}
-final class ClassCodeProducer extends ElementCodeProducer {
-  /// {@macro class_code_producer}
-  ClassCodeProducer(super.element, {this.stringifyState = false}) {
+final class BasicClassCodeProducer extends ClassCodeProducer {
+  /// {@macro basic_class_code_producer}
+  BasicClassCodeProducer(super.element, {this.stringifyState = false}) {
     if (!element.kindOf(ElementKind.CLASS)) {
       throw InvalidSourceElementException(
         got: element,
@@ -80,11 +80,14 @@ final class ClassCodeProducer extends ElementCodeProducer {
     }
   }
 
-  factory ClassCodeProducer.withCollectedAttributes(
+  factory BasicClassCodeProducer.withCollectedAttributes(
     Element element, {
     bool stringifyState = false,
   }) {
-    final producer = ClassCodeProducer(element, stringifyState: stringifyState);
+    final producer = BasicClassCodeProducer(
+      element,
+      stringifyState: stringifyState,
+    );
     producer.collectAttributes();
 
     return producer;
