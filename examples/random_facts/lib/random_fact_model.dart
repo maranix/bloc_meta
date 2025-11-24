@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:bloc_annotation/bloc_annotation.dart';
-
 final class Fact {
   const Fact({
     required this.id,
@@ -49,21 +47,4 @@ final class Fact {
       body,
     );
   }
-}
-
-@StateEnum()
-enum RandomFactStatesEnum {
-  initial(),
-  loading(),
-  loaded._(Attributes.of({AttributeValue(name: 'fact', type: Fact)})),
-  failure();
-
-  /// The data associated with this state (if any).
-  final Attributes data;
-
-  /// Default constructor — creates a state with no data.
-  const RandomFactStatesEnum() : data = const Attributes();
-
-  /// Internal constructor for variants that carry data.
-  const RandomFactStatesEnum._(this.data);
 }

@@ -1,1 +1,1 @@
-export 'random_fact_state.dart';
+export 'random_fact_model.dart';

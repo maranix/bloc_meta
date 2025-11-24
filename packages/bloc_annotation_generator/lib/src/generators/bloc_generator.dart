@@ -90,21 +90,19 @@ final class BlocGenerator extends GeneratorForAnnotation<BlocMeta> {
               ..body = Block.of(
                 eventMethods.map((method) {
                   final eventName = capitalize(method.name);
+                  
+                  // Check if method has Emitter parameter
                   final hasEmitter = method.formalParameters.any(
                     (p) => p.type.getDisplayString().startsWith('Emitter'),
                   );
 
-                  final args = method.formalParameters
-                      .where(
-                        (p) => !p.type.getDisplayString().startsWith('Emitter'),
-                      )
-                      .map((p) => 'event.${p.name ?? ''}')
-                      .join(', ');
-
+                  // The event handler should call the method with 'event' and 'emit'
+                  // If the method signature is: void fetchRandomFact(FetchRandomFact event, Emitter emit)
+                  // Then we call: fetchRandomFact(event, emit)
                   final callArgs = [
-                    if (args.isNotEmpty) args,
+                    'event',
                     if (hasEmitter) 'emit',
-                  ].where((s) => s.isNotEmpty).join(', ');
+                  ].join(', ');
 
                   return Code(
                     'on<$eventName>((event, emit) => ${method.name}($callArgs));',
@@ -115,17 +113,34 @@ final class BlocGenerator extends GeneratorForAnnotation<BlocMeta> {
         )
         ..methods.addAll(
           eventMethods.map((method) {
+            final eventName = capitalize(method.name);
+            final params = method.formalParameters.toList();
+            
             return Method(
               (m) => m
                 ..name = method.name
                 ..returns = refer(method.returnType.getDisplayString())
                 ..requiredParameters.addAll(
-                  method.formalParameters.map(
-                    (p) => Parameter(
-                      (param) => param
-                        ..name = p.name ?? ''
-                        ..type = refer(p.type.getDisplayString()),
-                    ),
+                  params.asMap().entries.map(
+                    (entry) {
+                      final index = entry.key;
+                      final p = entry.value;
+                      
+                      // First non-Emitter parameter should be the event type
+                      if (index == 0 && !p.type.getDisplayString().startsWith('Emitter')) {
+                        return Parameter(
+                          (param) => param
+                            ..name = p.name ?? ''
+                            ..type = refer(eventName),
+                        );
+                      }
+                      
+                      return Parameter(
+                        (param) => param
+                          ..name = p.name ?? ''
+                          ..type = refer(p.type.getDisplayString()),
+                      );
+                    },
                   ),
                 ),
             );
