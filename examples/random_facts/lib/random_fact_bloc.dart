@@ -21,9 +21,7 @@ sealed class RandomFactEvent {
 final class RandomFactBloc extends _$RandomFactBloc {
   RandomFactBloc({http.Client? client})
     : _client = client ?? http.Client(),
-      super(const []) {
-    on<_$RandomFactFetch>(_onFetchRandomFact);
-  }
+      super(const []);
 
   final http.Client _client;
 
@@ -31,10 +29,8 @@ final class RandomFactBloc extends _$RandomFactBloc {
 
   List<Fact> get allFacts => state;
 
-  void _onFetchRandomFact(
-    _$RandomFactFetch event,
-    Emitter<List<Fact>> emit,
-  ) async {
+  @override
+  void _onFetch(_$RandomFactFetch event, Emitter<List<Fact>> emit) async {
     try {
       final uri = Uri.tryParse(_randomFactURL);
 

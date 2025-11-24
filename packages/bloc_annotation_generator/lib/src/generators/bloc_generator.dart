@@ -8,6 +8,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'package:bloc_annotation_generator/src/configuration.dart';
+import 'package:bloc_annotation_generator/src/utils.dart';
 
 /// Generator for [BlocClass] annotated classes.
 final class BlocGenerator extends GeneratorForAnnotation<BlocClass> {
@@ -31,11 +32,9 @@ final class BlocGenerator extends GeneratorForAnnotation<BlocClass> {
       );
     }
 
-    final annotationProps = annotation.getBlocAnnotationProperties();
-    final name = annotationProps.name.isEmpty
-        ? element.displayName
-        : annotationProps.name;
-    final className = '_\$$name';
+    final name = annotation.read('name').stringValue;
+    final blocName = name.isEmpty ? element.displayName : name;
+    final className = '_\$$blocName';
 
     // 1. Determine Event and State Types from generics
     final dartType = annotation.objectValue.type;
@@ -53,15 +52,69 @@ final class BlocGenerator extends GeneratorForAnnotation<BlocClass> {
       );
     }
 
-    final eventType = dartType.typeArguments[0].getDisplayString();
-    final stateType = dartType.typeArguments[1].getDisplayString();
+    final eventType = dartType.typeArguments[0];
+    final stateType = dartType.typeArguments[1];
+    final eventTypeString = eventType.getDisplayString();
+    final stateTypeString = stateType.getDisplayString();
+
+    final eventElement = eventType.element;
+    if (eventElement == null || eventElement is! ClassElement) {
+      throw InvalidGenerationSourceError(
+        'Event type `${eventType.getDisplayString()}` is not a class or could not be resolved.',
+        element: element,
+      );
+    }
+
+    final onRegistrations = <Code>[];
+    final eventHandlers = <Method>[];
+
+    for (final constructor in eventElement.constructors) {
+      if (!constructor.isFactory || (constructor.name?.isEmpty ?? true)) {
+        continue;
+      }
+
+      final factoryName = constructor.name!;
+      final capitalizedFactory = capitalize(factoryName);
+      final parentName = eventElement.displayName;
+      final baseName = parentName.endsWith('Event')
+          ? parentName.substring(0, parentName.length - 'Event'.length)
+          : parentName;
+      final eventClassName = '_\$$baseName$capitalizedFactory';
+      final handlerMethodName = '_on$capitalizedFactory';
+
+      onRegistrations.add(
+        refer('on')
+            .call([refer(handlerMethodName)], {}, [refer(eventClassName)])
+            .statement,
+      );
+
+      eventHandlers.add(
+        Method(
+          (b) => b
+            ..name = handlerMethodName
+            ..returns = refer('void')
+            ..requiredParameters.addAll([
+              Parameter(
+                (p) => p
+                  ..name = 'event'
+                  ..type = refer(eventClassName),
+              ),
+              Parameter(
+                (p) => p
+                  ..name = 'emit'
+                  ..type = refer('Emitter<$stateTypeString>'),
+              ),
+            ]),
+        ),
+      );
+    }
 
     // Generate Bloc Class - users will manually define events and register handlers
     final blocClass = Class(
       (b) => b
         ..name = className
         ..abstract = true
-        ..extend = refer('Bloc<$eventType, $stateType>')
+        ..extend = refer('Bloc<$eventTypeString, $stateTypeString>')
         ..constructors.add(
           Constructor(
             (c) => c
@@ -71,9 +124,11 @@ final class BlocGenerator extends GeneratorForAnnotation<BlocClass> {
                     ..name = 'initialState'
                     ..toSuper = true,
                 ),
-              ),
+              )
+              ..body = Block.of(onRegistrations),
           ),
-        ),
+        )
+        ..methods.addAll(eventHandlers),
     );
 
     final emitter = DartEmitter();
