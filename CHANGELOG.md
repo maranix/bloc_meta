@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.0] - 2025-11-24
+## [0.5.0] - 2025-11-24
 
 ### Added
 - **Annotations**: Introduced `@BlocClass`, `@CubitClass`, and `@EventClass` annotations for defining BLoC components.

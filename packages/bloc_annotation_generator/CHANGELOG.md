@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - 2025-11-24
+## [0.5.0] - 2025-11-24
 
 ### Added
 - Added `BlocGenerator` for generating BLoC classes with event handling logic.

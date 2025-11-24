@@ -14,10 +14,10 @@ Add `bloc_annotation` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  bloc_annotation: ^1.0.0
+  bloc_annotation: ^0.5.0
 
 dev_dependencies:
-  bloc_annotation_generator: ^1.0.0
+  bloc_annotation_generator: ^0.5.0
   build_runner: ^2.4.0
 ```
 
