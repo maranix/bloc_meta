@@ -9,3 +9,11 @@ part of 'random_fact_bloc.dart';
 abstract class _$RandomFactBloc extends Bloc<RandomFactEvent, List<Fact>> {
   _$RandomFactBloc(super.initialState);
 }
+
+// **************************************************************************
+// EventGenerator
+// **************************************************************************
+
+final class _$RandomFactFetchRandomFact extends RandomFactEvent {
+  const _$RandomFactFetchRandomFact();
+}

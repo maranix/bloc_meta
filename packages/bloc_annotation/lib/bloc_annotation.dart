@@ -4,5 +4,5 @@ library;
 
 export 'src/bloc.dart' show BlocClass;
 export 'src/cubit.dart' show CubitClass;
-export 'src/event.dart' show EventMeta;
+export 'src/event.dart' show EventClass;
 export 'src/state.dart' show StateMeta;

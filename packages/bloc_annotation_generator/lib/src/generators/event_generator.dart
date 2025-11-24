@@ -9,7 +9,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Generator for [EventClass] annotated classes.
-final class EventGenerator extends GeneratorForAnnotation<EventMeta> {
+final class EventGenerator extends GeneratorForAnnotation<EventClass> {
   /// Creates a new [EventGenerator] with optional [config].
   EventGenerator([this.config = const GeneratorConfig()]);
 
@@ -44,18 +44,14 @@ final class EventGenerator extends GeneratorForAnnotation<EventMeta> {
     // Iterate over factory constructors
     for (final constructor in element.constructors) {
       if (!constructor.isFactory) continue;
-      if (constructor.name?.isEmpty ?? true)
-        continue; // Skip default factory if any? Usually named factories are used.
 
-      final redirectedConstructor = constructor.redirectedConstructor;
-      if (redirectedConstructor == null) {
-        // Maybe it's not a redirecting factory?
-        // The requirement says: factory RandomFactEvent.fetchEvent() = _$RandomFactFetchEvent;
-        continue;
-      }
+      // Skip default factory if any? Usually named factories are used.
+      if (constructor.name?.isEmpty ?? true) continue;
+
+      if (constructor.redirectedConstructor == null) continue;
 
       final generatedClassName =
-          redirectedConstructor.returnType.element.displayName;
+          constructor.redirectedConstructor!.returnType.element.displayName;
 
       // Generate the class
       final params = constructor.formalParameters.toList();
@@ -63,6 +59,7 @@ final class EventGenerator extends GeneratorForAnnotation<EventMeta> {
       final generatedClass = Class(
         (b) => b
           ..name = generatedClassName
+          ..modifier = ClassModifier.final$
           ..extend = refer(element.displayName)
           ..fields.addAll(
             params.map(
@@ -106,7 +103,7 @@ final class EventGenerator extends GeneratorForAnnotation<EventMeta> {
             ),
           )
           ..methods.addAll([
-            if (shouldToString)
+            if (shouldToString && params.isNotEmpty)
               Method(
                 (m) => m
                   ..annotations.add(refer('override'))
@@ -127,7 +124,7 @@ final class EventGenerator extends GeneratorForAnnotation<EventMeta> {
                     ),
                   ),
               ),
-            if (shouldEquality) ...[
+            if (shouldEquality && params.isNotEmpty) ...[
               Method(
                 (m) => m
                   ..annotations.add(refer('override'))
