@@ -14,6 +14,6 @@ abstract class _$RandomFactBloc extends Bloc<RandomFactEvent, List<Fact>> {
 // EventGenerator
 // **************************************************************************
 
-final class _$RandomFactFetchRandomFact extends RandomFactEvent {
-  const _$RandomFactFetchRandomFact();
+final class _$RandomFactFetch extends RandomFactEvent {
+  const _$RandomFactFetch();
 }

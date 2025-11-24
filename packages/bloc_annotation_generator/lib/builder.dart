@@ -7,7 +7,6 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 Builder blocAnnotationGenerator(BuilderOptions options) {
-  print('blocAnnotationGenerator builder factory called');
   final config = GeneratorConfig.fromOptions(options);
   return SharedPartBuilder([
     BlocGenerator(config),

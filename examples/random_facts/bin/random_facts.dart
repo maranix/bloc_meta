@@ -11,7 +11,7 @@ void main() async {
 
   randomFactBloc.stream.listen(_renderState);
 
-  randomFactBloc.add(RandomFactEvent.fetchRandomFact());
+  randomFactBloc.add(RandomFactEvent.fetch());
 
   if (io.Platform.isWindows) {
     io.stdin.echoMode = false;
@@ -21,7 +21,7 @@ void main() async {
       .transform(utf8.decoder)
       .listen(
         (key) async => switch (key) {
-          'f' || 'F' => randomFactBloc.add(RandomFactEvent.fetchRandomFact()),
+          'f' || 'F' => randomFactBloc.add(RandomFactEvent.fetch()),
           's' || 'S' => _renderState(randomFactBloc.latestFact?.text),
           'l' || 'L' => _renderState(
             randomFactBloc.allFacts.map((f) => f.text).toList(),

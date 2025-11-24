@@ -14,7 +14,7 @@ const _randomFactURL = "https://uselessfacts.jsph.pl/api/v2/facts/random";
 sealed class RandomFactEvent {
   const RandomFactEvent();
 
-  factory RandomFactEvent.fetchRandomFact() = _$RandomFactFetchRandomFact;
+  factory RandomFactEvent.fetch() = _$RandomFactFetch;
 }
 
 @BlocClass<RandomFactEvent, List<Fact>>()
@@ -22,7 +22,7 @@ final class RandomFactBloc extends _$RandomFactBloc {
   RandomFactBloc({http.Client? client})
     : _client = client ?? http.Client(),
       super(const []) {
-    on<_$RandomFactFetchRandomFact>(_onFetchRandomFact);
+    on<_$RandomFactFetch>(_onFetchRandomFact);
   }
 
   final http.Client _client;
@@ -32,7 +32,7 @@ final class RandomFactBloc extends _$RandomFactBloc {
   List<Fact> get allFacts => state;
 
   void _onFetchRandomFact(
-    _$RandomFactFetchRandomFact event,
+    _$RandomFactFetch event,
     Emitter<List<Fact>> emit,
   ) async {
     try {

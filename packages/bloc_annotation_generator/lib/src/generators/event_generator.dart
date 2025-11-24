@@ -48,12 +48,30 @@ final class EventGenerator extends GeneratorForAnnotation<EventClass> {
       // Skip default factory if any? Usually named factories are used.
       if (constructor.name?.isEmpty ?? true) continue;
 
-      if (constructor.redirectedConstructor == null) continue;
+      // The factory may not have a resolved redirectedConstructor yet (the part file is being generated).
+      // In that case we derive the generated class name using the convention
+      //   _$<ParentClassName><FactoryName> (factory name capitalized).
+      // e.g. for `RandomFactEvent.fetchRandomFact` we expect `_\$RandomFactEventFetchRandomFact`.
+      final redirectedConstructor = constructor.redirectedConstructor;
 
-      final generatedClassName =
-          constructor.redirectedConstructor!.returnType.element.displayName;
+      String generatedClassName;
+      if (redirectedConstructor != null) {
+        generatedClassName =
+            redirectedConstructor.returnType.element.displayName;
+      } else {
+        // Fallback: derive name from parent class (without the trailing 'Event' suffix) and factory name, capitalizing the factory name.
+        final factoryName = constructor.name ?? '';
+        final capitalizedFactory = capitalize(factoryName);
+        // Remove trailing 'Event' from the parent class name if present.
+        final parentName = element.displayName;
+        final baseName = parentName.endsWith('Event')
+            ? parentName.substring(0, parentName.length - 'Event'.length)
+            : parentName;
+        generatedClassName = '_\$$baseName$capitalizedFactory';
+      }
 
       // Generate the class
+      // Use the factory's formal parameters (named or positional) for the generated class fields.
       final params = constructor.formalParameters.toList();
 
       final generatedClass = Class(
