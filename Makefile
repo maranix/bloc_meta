@@ -1,4 +1,4 @@
-.PHONY: dry_run_annotation dry_run_generator dry_run publish_annotation publish_generator publish fix_annotation fix_generator fix test_annotation test_generator test
+.PHONY: dry_run_meta dry_run_generator dry_run publish_meta publish_generator publish fix_meta fix_generator fix test_meta test_generator test
 
 # Reusable function for confirmation
 define confirm
@@ -10,47 +10,47 @@ define confirm
 endef
 
 # Dry-run targets
-dry_run_annotation:
-	dart pub -C packages/bloc_annotation publish --dry-run
+dry_run_meta:
+	dart pub -C packages/bloc_meta publish --dry-run
 
 dry_run_generator:
-	dart pub -C packages/bloc_annotation_generator publish --dry-run
+	dart pub -C packages/bloc_meta_generator publish --dry-run
 
-dry_run: dry_run_annotation dry_run_generator
+dry_run: dry_run_meta dry_run_generator
 
 # Actual publish targets
-publish_annotation:
-	dart test packages/bloc_annotation && dart pub -C packages/bloc_annotation publish
+publish_meta:
+	dart test packages/bloc_meta && dart pub -C packages/bloc_meta publish
 
 publish_generator:
-	dart test packages/bloc_annotation_generator && dart pub -C packages/bloc_annotation_generator publish
+	dart test packages/bloc_meta_generator && dart pub -C packages/bloc_meta_generator publish
 
 publish:
 	$(confirm)
-	@$(MAKE) publish_annotation
+	@$(MAKE) publish_meta
 	@$(MAKE) publish_generator
 
 
 # Apply dart fix to targets
-fix_annotation:
-	dart fix packages/bloc_annotation --apply
+fix_meta:
+	dart fix packages/bloc_meta --apply
 
 fix_generator:
-	dart fix packages/bloc_annotation_generator --apply
+	dart fix packages/bloc_meta_generator --apply
 
 fix:
 	$(confirm)
-	@$(MAKE) fix_annotation
+	@$(MAKE) fix_meta
 	@$(MAKE) fix_generator
 
 # Run tests for targets
-test_annotation:
-	dart test packages/bloc_annotation
+test_meta:
+	dart test packages/bloc_meta
 
 test_generator:
-	dart test packages/bloc_annotation_generator
+	dart test packages/bloc_meta_generator
 
 test:
 	$(confirm)
-	@$(MAKE) test_annotation
+	@$(MAKE) test_meta
 	@$(MAKE) test_generator
