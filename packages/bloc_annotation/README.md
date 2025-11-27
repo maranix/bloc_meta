@@ -14,11 +14,11 @@ Add `bloc_annotation` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  bloc_annotation: ^0.5.0
+  bloc_annotation: ^1.0.0
 
 dev_dependencies:
-  bloc_annotation_generator: ^0.5.0
-  build_runner: ^2.4.0
+  bloc_annotation_generator: ^1.0.0
+  build_runner: ^2.10.0
 ```
 
 ## Usage
@@ -28,13 +28,28 @@ dev_dependencies:
 ```dart
 import 'package:bloc_annotation/bloc_annotation.dart';
 
-@BlocClass(state: int)
-class CounterBloc {
-  @EventClass()
-  void increment();
+@EventClass()
+sealed class CounterEvent {
+  const CounterEvent();
 
-  @EventClass()
-  void decrement();
+  const factory CounterEvent.increment() = _$CounterIncrement;
+
+  const factory CounterEvent.decrement() = _$CounterDecrement;
+}
+
+@BlocClass<CounterEvent, int>()
+class CounterBloc extends _$CounterBloc {
+  CounterBloc() : super(0);
+
+  @override
+  void _onIncrement(_$CounterIncrement event, Emitter<int> emit) {
+    emit(state + 1);
+  }
+
+  @override
+  void _onDecrement(_$CounterDecrement event, Emitter<int> emit) {
+    emit(state - 1);
+  }
 }
 ```
 
@@ -43,8 +58,10 @@ class CounterBloc {
 ```dart
 import 'package:bloc_annotation/bloc_annotation.dart';
 
-@CubitClass(state: int)
-class CounterCubit {
+@CubitClass<int>()
+class CounterCubit extends _$CounterCubit {
+  CounterCubit() : super(0);
+
   void increment() => emit(state + 1);
   void decrement() => emit(state - 1);
 }

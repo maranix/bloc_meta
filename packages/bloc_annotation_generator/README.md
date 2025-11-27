@@ -15,8 +15,8 @@ Add `bloc_annotation_generator` to your `dev_dependencies`:
 
 ```yaml
 dev_dependencies:
-  bloc_annotation_generator: ^0.5.0
-  build_runner: ^2.4.0
+  bloc_annotation_generator: ^1.0.0
+  build_runner: ^2.10.0
 ```
 
 ## Usage
@@ -58,7 +58,7 @@ targets:
 
 ### Examples
 
-#### BLoC with Explicit State Type
+#### BLoC
 
 Input:
 
@@ -68,15 +68,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'counter_bloc.g.dart';
 
-@BlocClass(state: int)
-final class CounterBloc extends _$CounterBloc {
+
+@EventClass()
+sealed class CounterBlocEvent {
+  const factory CounterBlocEvent.increment() = _$CounterIncrement;
+  const factory CounterBlocEvent.decrement() = _$CounterDecrement;
+}
+
+@BlocClass<CounterEvent, int>()
+class CounterBloc extends _$CounterBloc {
   CounterBloc() : super(0);
 
-  @EventClass()
-  void increment() => emit(state + 1);
+  @override
+  void _onIncrement(_$CounterIncrement event, Emitter<int> emit) {
+    emit(state + 1);
+  }
 
-  @EventClass()
-  void decrement() => emit(state - 1);
+  @override
+  void _onDecrement(_$CounterDecrement event, Emitter<int> emit) {
+    emit(state - 1);
+  }
 }
 ```
 
@@ -87,28 +98,28 @@ Generated Output (`counter_bloc.g.dart`):
 
 part of 'counter_bloc.dart';
 
-sealed class CounterBlocEvent {}
 
-class Increment extends CounterBlocEvent {
-  const Increment();
+final class _$CounterIncrement extends CounterBlocEvent {
+  const _$CounterIncrement();
 }
 
-class Decrement extends CounterBlocEvent {
-  const Decrement();
+final class _$CounterDecrement extends CounterBlocEvent {
+  const _$CounterDecrement();
 }
 
 abstract class _$CounterBloc extends Bloc<CounterBlocEvent, int> {
   _$CounterBloc(super.initialState) {
-    on<Increment>((event, emit) => increment());
-    on<Decrement>((event, emit) => decrement());
+    on<_$CounterIncrement>(_onIncrement);
+    on<_$CounterDecrement>(_onDecrement);
   }
 
-  void increment();
-  void decrement();
+  void _onIncrement(_$CounterIncrement event, Emitter<int> emit);
+
+  void _onDecrement(_$CounterDecrement event, Emitter<int> emit); 
 }
 ```
 
-#### Cubit with Explicit State Type
+#### Cubit
 
 Input:
 
@@ -118,8 +129,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'counter_cubit.g.dart';
 
-@CubitClass(state: int)
-final class CounterCubit extends _$CounterCubit {
+@CubitClass<int>()
+class CounterCubit extends _$CounterCubit {
   CounterCubit() : super(0);
 
   void increment() => emit(state + 1);

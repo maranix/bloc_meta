@@ -1,17 +1,12 @@
 # Changelog
 
-## [0.5.0] - 2025-11-24
+## [1.0.0] - 2025-11-27
 
 ### Added
-### Added
-- Added `@BlocClass` annotation for defining BLoC classes.
-- Added `@CubitClass` annotation for defining Cubit classes.
-- Added `@EventClass` annotation for defining event methods.
+- Added library-level documentation.
+- Added comprehensive documentation for `@BlocClass`, `@CubitClass`, and `@EventClass`.
 
 ### Changed
 - **Breaking**: Renamed `@Bloc` to `@BlocClass`.
 - **Breaking**: Renamed `@Cubit` to `@CubitClass`.
 - **Breaking**: Renamed `@Event` to `@EventClass`.
-
-### Removed
-- **Breaking**: Removed `@State` annotation.
