@@ -1,13 +1,13 @@
-# Contributing to bloc_annotation
+# Contributing to bloc_meta
 
-Thank you for your interest in contributing to `bloc_annotation`! We welcome contributions from the community.
+Thank you for your interest in contributing to `bloc_meta`! We welcome contributions from the community.
 
 ## Getting Started
 
 1.  **Fork the repository** on GitHub.
 2.  **Clone your fork** locally:
     ```bash
-    git clone https://github.com/maranix/bloc_annotation.git
+    git clone https://github.com/maranix/bloc_meta.git
     ```
 3.  **Create a new branch** for your feature or bug fix:
     ```bash
@@ -17,15 +17,15 @@ Thank you for your interest in contributing to `bloc_annotation`! We welcome con
 ## Development Workflow
 
 This project is a monorepo containing two packages:
--   `packages/bloc_annotation`: The annotation package.
--   `packages/bloc_annotation_generator`: The code generator package.
+-   `packages/bloc_meta`: The annotation package.
+-   `packages/bloc_meta_generator`: The code generator package.
 
 ### Running Tests
 
 To run tests for the generator:
 
 ```bash
-cd packages/bloc_annotation_generator
+cd packages/bloc_meta_generator
 dart test
 ```
 
@@ -41,4 +41,4 @@ Please ensure your code follows the standard Dart style guide. We use `dart_styl
 
 ## Reporting Issues
 
-If you find a bug or have a feature request, please open an issue on the [Issue Tracker](https://github.com/maranix/bloc_annotation/issues).
+If you find a bug or have a feature request, please open an issue on the [Issue Tracker](https://github.com/maranix/bloc_meta/issues).

@@ -1,6 +1,7 @@
 name: counter
 description: A sample command-line application.
 version: 1.0.0
+publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -10,11 +11,11 @@ resolution: workspace
 
 # Add regular dependencies here.
 dependencies:
-  bloc_annotation: any
+  bloc_meta: any
   bloc: ^9.1.0
 
 dev_dependencies:
   lints: ^6.0.0
   test: ^1.25.6
   build_runner: ^2.10.0
-  bloc_annotation_generator: any
+  bloc_meta_generator: any

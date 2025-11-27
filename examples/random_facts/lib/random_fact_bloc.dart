@@ -3,21 +3,21 @@ import 'dart:io' show HttpStatus;
 import 'package:http/http.dart' as http;
 
 import 'package:bloc/bloc.dart';
-import 'package:bloc_annotation/bloc_annotation.dart';
+import 'package:bloc_meta/bloc_meta.dart';
 import 'package:random_facts/random_fact_model.dart';
 
 part 'random_fact_bloc.g.dart';
 
 const _randomFactURL = "https://uselessfacts.jsph.pl/api/v2/facts/random";
 
-@EventClass()
+@EventMeta()
 sealed class RandomFactEvent {
   const RandomFactEvent();
 
   factory RandomFactEvent.fetch() = _$RandomFactFetch;
 }
 
-@BlocClass<RandomFactEvent, List<Fact>>()
+@BlocMeta<RandomFactEvent, List<Fact>>()
 final class RandomFactBloc extends _$RandomFactBloc {
   RandomFactBloc({http.Client? client})
     : _client = client ?? http.Client(),

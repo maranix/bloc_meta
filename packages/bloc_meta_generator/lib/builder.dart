@@ -1,0 +1,16 @@
+import 'package:bloc_meta_generator/src/configuration.dart';
+import 'package:bloc_meta_generator/src/generators/bloc_generator.dart';
+import 'package:bloc_meta_generator/src/generators/cubit_generator.dart';
+import 'package:bloc_meta_generator/src/generators/event_generator.dart';
+
+import 'package:build/build.dart';
+import 'package:source_gen/source_gen.dart';
+
+Builder blocMetaGenerator(BuilderOptions options) {
+  final config = GeneratorConfig.fromOptions(options);
+  return SharedPartBuilder([
+    BlocGenerator(config),
+    CubitGenerator(config),
+    EventGenerator(config),
+  ], 'bloc_meta_generator');
+}

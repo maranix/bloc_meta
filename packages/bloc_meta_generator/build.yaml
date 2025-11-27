@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      bloc_meta_generator:
+        enabled: true
+
+builders:
+  bloc_meta_generator:
+    import: "package:bloc_meta_generator/builder.dart"
+    builder_factories: ["blocMetaGenerator"]
+    build_extensions: { ".dart": [".bloc_meta_generator.g.part"] }
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

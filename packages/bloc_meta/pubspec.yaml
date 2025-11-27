@@ -1,0 +1,25 @@
+name: bloc_meta
+description: Annotations for bloc_meta code generation package
+version: 1.0.0
+homepage: https://github.com/maranix/bloc_meta/tree/main/bloc_meta
+repository: https://github.com/maranix/bloc_meta
+issue_tracker: https://github.com/maranix/bloc_meta/issues
+
+topics:
+  - annotation
+  - bloc
+  - cubit
+  - flutter
+  - dart
+
+environment:
+  sdk: ^3.9.2
+
+resolution: workspace
+
+dependencies:
+  meta: ^1.17.0
+
+dev_dependencies:
+  pedantic_mono: ^1.35.0
+  test: ^1.25.6

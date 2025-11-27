@@ -1,7 +1,7 @@
-name: bloc_annotation_workspace
+name: bloc_meta_workspace
 
 description: >-
-  Monorepo for bloc_annotation and bloc_annotation_generator packages with examples.
+  Monorepo for bloc_meta and bloc_meta_generator packages with examples.
 
 environment:
     sdk: ^3.9.2
@@ -9,8 +9,8 @@ environment:
 publish_to: none
 
 workspace:
-  - packages/bloc_annotation
-  - packages/bloc_annotation_generator
+  - packages/bloc_meta
+  - packages/bloc_meta_generator
   - examples/counter_cubit
   - examples/random_facts
   - examples/dog
