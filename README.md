@@ -1,3 +1,6 @@
+> **Note:** <br/>
+  This package has been discontinued in favour of [analyzer_kit](https://www.github.com/maranix/analyzer_kit)
+
 # bloc_meta
 
 **bloc_meta** is a complementary package designed to streamline BLoC code generation for Dart and Flutter applications. By leveraging code generation, this package accelerates development time, reduces boilerplate code writing, and aims to improve overall developer experience while working with BLoC state management.
